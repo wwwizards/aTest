@@ -1,5 +1,5 @@
 ---
-- hosts: localhost      # localhost assumes no need for ssh-keys
+- hosts: localhost      # localhost - assumes no need for ssh-keys
   remote_user: ansible  # use default-user user as s-ansible
   connection: local     # force local connection
   gather_facts: false
@@ -21,11 +21,13 @@
         - clamav        #cli-front-end
         - clamav-daemon #back-end
         - clamtk        #optional gui-toolkit
+
 # [TASK-2.1] - Install aws-cli tools (state=present is optional)  
     - name: Install awscli tools  
       apt:
         name: awscli, python3-boto
         state: present
+
 # [TASK-2.2] - Install foundational admin-tools & required packages  
     - name: Install a list of sys-admin packages
       apt:
@@ -41,17 +43,22 @@
         - git 
         - jq 
         - tree
+
 # [TASK-3] - Install GUI DB Tools
     - name: Install gui-dba-tools 
       apt:
         pkg:
         - gnome-shell-extensions 
         - dbeaver-ce
+
 # [TASK-4] - Update all packages to the latest version  
     - name: Update all packages to the latest version
       apt:
         name: "*"
         state: latest
+
+
+### YOU ARE HERE - EVERYTHING ABOVE THIS WORKS!
 
 # [TASK-5.1] - Install security-auditing tool using repo from internet 
     - name: Install prerequisites for Ansible to install .deb via apt module
@@ -64,4 +71,3 @@
       apt:
         pkg: lynis
         state: present
-
