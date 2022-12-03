@@ -1,0 +1,67 @@
+---
+- hosts: localhost      # localhost assumes no need for ssh-keys
+  remote_user: ansible  # use default-user user as s-ansible
+  connection: local     # force local connection
+  gather_facts: false
+  become: true
+  # use the builtin apt module to install some software packages
+  # https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+
+  #? To do this as an ad-hoc command you can run something like:
+  #? $> ansible all -m apt -a "upgrade=yes update_cache=yes cache_valid_time=86400" --become
+  #  apt:
+  #  upgrade: yes
+  #  update_cache: yes
+  #  cache_valid_time: 86400 #One day
+  tasks:  
+# [TASK-1.1] - Install antivirus tools  
+    - name: Install ClamAV antivirus  
+      apt:
+        pkg:
+        - clamav        #cli-front-end
+        - clamav-daemon #back-end
+        - clamtk        #optional gui-toolkit
+# [TASK-2.1] - Install aws-cli tools (state=present is optional)  
+    - name: Install awscli tools  
+      apt:
+        name: awscli, python3-boto
+        state: present
+# [TASK-2.2] - Install foundational admin-tools & required packages  
+    - name: Install a list of sys-admin packages
+      apt:
+        pkg:
+        - adacontrol 
+        - net-tools
+        - curl 
+        - wget
+        - zip
+        - unzip
+        - rsync 
+        - vim
+        - git 
+        - jq 
+        - tree
+# [TASK-3] - Install GUI DB Tools
+    - name: Install gui-dba-tools 
+      apt:
+        pkg:
+        - gnome-shell-extensions 
+        - dbeaver-ce
+# [TASK-4] - Update all packages to the latest version  
+    - name: Update all packages to the latest version
+      apt:
+        name: "*"
+        state: latest
+
+# [TASK-5.1] - Install security-auditing tool using repo from internet 
+    - name: Install prerequisites for Ansible to install .deb via apt module
+      apt:
+        pkg: xz-utils
+    - name: add lynis repo
+      apt:
+        deb: https://packages.cisofy.com/community/lynis/deb/ 
+    - name: Install lynis
+      apt:
+        pkg: lynis
+        state: present
+
