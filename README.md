@@ -1,6 +1,6 @@
 # DevOps IaC Workstation Configuration 
 ## ABSTRACT: DevOps IaC workstations customizations for Ubuntu 
-##   AUTHOR: Joe Negron (joe.negron.nyc@gmail.com)
+##   AUTHOR: Joe Negron ~ NYC
 ##  CREATED: 2022-NOV18JN - Initial config using PNY-8GB thumb drive (BLUE)
 ##  UPDATED: 2022-NOV26JN - added ansible skeleton  using apt for dependencies
 ##  UPDATED: 2022-DEC03JN - created local virtualization layer
