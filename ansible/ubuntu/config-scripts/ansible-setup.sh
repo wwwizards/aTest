@@ -8,9 +8,9 @@
 sudo apt-get update && sudo apt-get upgrade
 # install PPA helper
 sudo apt install software-properties-common
-
+# define dependencies
 REQUIRED_PKG="ansible"
-# update the repo if missing
+# add the repo if missing
 if ! grep -q "^deb .*$REQUIRED_PKG" /etc/apt/sources.list /etc/apt/sources.list.d/*; then 
     sudo apt-add-repository --yes --update ppa:ansible/ansible
 fi

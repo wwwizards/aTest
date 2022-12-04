@@ -1,56 +1,35 @@
 #!/bin/bash
-# ABSTRACT: Joey's customizations for Ubuntu 
+# ABSTRACT: Joey's Custom Tweaks for Ubuntu IaC Development  Environment
 #  CREATED: 2022-NOV18JN - Initial install usin PNY-8GB thumb drive (BLUE)
-#  UPDATED:
-# REQUIRES: Ubuntu 20.04-LTS
+#  UPDATED: 2022-DEC04JN - 
+# REQUIRES: Apt Package Manager - tested w/Ubuntu-20.04-LTS
+
+export SCRIPTPATH="$( cd -- "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 ; pwd -P )"
 
 # POST-PROVISION HARDENING 
-## STEP-1. Download and Install Latest Updates
 sudo apt-get update && sudo apt-get upgrade
+
 # install tools for tweaking GUI
 sudo add-apt-repository universe
 sudo apt install gnome-tweaks #Previously known as Tweak Tool.
-# quick & dirty enable personal firewall & install gui tools for it
-# SEE ALSO: https://github.com/Oefenweb/ansible-ufw 
+
+# BEFORE ANYTHING ELSE: Enable ufw - an ubuntu enhancement for managing iptables
+# quick & dirty script to enable personal firewall & optionally install gui tools for it
+# SEE: https://linuxize.com/post/how-to-setup-a-firewall-with-ufw-on-ubuntu-20-04/
+sudo ufw allow ssh #! IMPORTANT: especially if you are using ansible and/or working remotely...
 sudo ufw enable
-sudo apt-get install gufw
+sudo apt-get install gufw # optional
+
+# MORE ADVANCED: these configs can be managed via ansible playbooks
+# SEE: https://github.com/Oefenweb/ansible-ufw
+# SEE ALSO: https://docs.ansible.com/ansible/latest/collections/community/general/ufw_module.html 
+
+
+# install & configure terraform using tfswitch
+sudo bash $SCRIPTPATH/terraform-setup.sh
+
+# install virtualbox
+sudo bash $SCRIPTPATH/virtualbox-setup.sh
 
 # install ansible
-sudo apt install software-properties-common
-sudo apt-add-repository --yes --update ppa:ansible/ansible && sudo apt install ansible
-# install ansible apt-module
-sudo ansible localhost -m apt -a "name=elinks state=present" --become --connection local
-
-# create ansible directory skeletons
-CWD=$(pwd)
-ANSIBLE_HOME='~/data/projects/tools/ansible/ubuntu'
-PLAYBOOKS_HOME="$ANSIBLE_HOME/playbooks"
-ENV_LIST='UNKNOWN DEV STAGE PROD'
-mkdir -pv $PLAYBOOKS_HOME && cd $PLAYBOOKS_HOME
-
-# create basic-multi-env structure
-mkdir -pv group_vars host_vars library filter_plugins
-cd group_vars
-for ENVIRONMENT in $ENV_LIST ; do echo -e "---\nserverMode: $ENVIRONMENT" > $ENVIRONMENT; done
-mv -v UNKNOWN ALL
-touch dev stage prod site.yml 
-cd -
-# create basic-roles skeleton
-mkdir -pv roles/template/{tasks,handlers,templates,files,vars,defaults,meta}
-# set defaults
-echo "[defaults]
-
-host_key_checking = False" >> roles/ansible.cfg
-#create yml files
-touch roles/template/{tasks,handlers,templates,files,vars,defaults,meta}/main.yml
-
-
-###################################################################################################
-
-#create playbook for base packages
-#cat << EOF > /tmp/yourfilehere
-
-
-#EOF
-
-cd $CWD
+sudo bash $SCRIPTPATH/ansible-setup.sh
