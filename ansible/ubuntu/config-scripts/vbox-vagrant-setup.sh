@@ -39,3 +39,5 @@ sudo apt update && sudo apt install vagrant
 # housekeeping
 cd $CWD
 rm -rf $TMP
+
+# test w/ansible - https://www.middlewareinventory.com/blog/vagrant-ansible-example/
