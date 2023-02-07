@@ -5,9 +5,19 @@
 # REQUIRES: Apt Package Manager - tested w/Ubuntu-20.04-LTS
 
 export SCRIPTPATH="$( cd -- "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 ; pwd -P )"
+echo $SCRIPTPATH # Sanity Check
 
-# POST-PROVISION HARDENING 
+# POST-PROVISION UPDATES 
 sudo apt-get update && sudo apt-get upgrade
+
+# PKG-DEPENDENCIES - uses cache & hard-coded strings to aviod issues with broken packages or using a brute force loop 
+apt-cache --generate pkgnames \
+| grep --line-regexp --fixed-strings \
+  -e curl \
+  -e zip \
+  -e unzip \
+  -e vim \
+| xargs apt install -y
 
 # install tools for tweaking GUI
 sudo add-apt-repository universe
