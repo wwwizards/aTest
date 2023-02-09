@@ -11,13 +11,13 @@ echo $SCRIPTPATH # Sanity Check
 sudo apt-get update && sudo apt-get upgrade
 
 # PKG-DEPENDENCIES - uses cache & hard-coded strings to aviod issues with broken packages or using a brute force loop 
-apt-cache --generate pkgnames \
+sudo apt-cache --generate pkgnames \
 | grep --line-regexp --fixed-strings \
   -e curl \
   -e zip \
   -e unzip \
   -e vim \
-| xargs apt install -y
+| xargs sudo apt install -y
 
 # install tools for tweaking GUI
 sudo add-apt-repository universe
